@@ -7,7 +7,7 @@ import User from './pages/User';
 
 const Stack = createStackNavigator();
 
-const options = {
+const defaultOptions = {
   headerTitleAlign: 'center',
   headerBackTitleVisible: false,
   headerStyle: {
@@ -19,7 +19,7 @@ const options = {
 export default function Routes() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={options}>
+      <Stack.Navigator screenOptions={defaultOptions}>
         <Stack.Screen name="Usuários" component={Main} />
         <Stack.Screen name="User" component={User} />
       </Stack.Navigator>
