@@ -20,8 +20,16 @@ export default function Routes() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={defaultOptions}>
-        <Stack.Screen name="Usuários" component={Main} />
-        <Stack.Screen name="User" component={User} />
+        <Stack.Screen
+          name="Main"
+          options={{ title: 'Usuários' }}
+          component={Main}
+        />
+        <Stack.Screen
+          name="User"
+          options={{ title: 'Perfil Usuário' }}
+          component={User}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
