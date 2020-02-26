@@ -38,6 +38,7 @@ export default class User extends Component {
     stars: [],
     loading: true,
     page: 1,
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -58,22 +59,31 @@ export default class User extends Component {
     this.setState({
       stars: page >= 2 ? [...stars, ...response.data] : response.data,
       loading: false,
+      refreshing: false,
       page,
     });
   };
 
-  loadMore = async () => {
+  loadMore = () => {
     const { page } = this.state;
 
     const pageNumber = page + 1;
 
-    await this.loadStars(pageNumber);
+    this.loadStars(pageNumber);
+  };
+
+  refreshList = () => {
+    const firstPage = 1;
+
+    this.setState({ stars: [], page: firstPage, refreshing: true });
+
+    this.loadStars(firstPage);
   };
 
   render() {
     const { route } = this.props;
     const { user } = route.params;
-    const { stars, loading } = this.state;
+    const { stars, loading, refreshing } = this.state;
     return (
       <Container>
         <Header>
@@ -98,6 +108,8 @@ export default class User extends Component {
                 </Info>
               </Starred>
             )}
+            onRefresh={this.refreshList} // Função dispara quando o usuário arrasta a lista pra baixo
+            refreshing={refreshing}
             onEndReachedThreshold={0.3}
             onEndReached={this.loadMore}
           />
