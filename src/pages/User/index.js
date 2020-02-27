@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '../../services/api';
 import {
   Container,
@@ -21,6 +22,7 @@ export default class User extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       setOptions: PropTypes.func,
+      navigate: PropTypes.func,
     }).isRequired,
     route: PropTypes.shape({
       params: PropTypes.shape({
@@ -80,6 +82,11 @@ export default class User extends Component {
     this.loadStars(firstPage);
   };
 
+  handleNavigate = repository => {
+    const { navigation } = this.props;
+    navigation.navigate('Repository', { repository });
+  };
+
   render() {
     const { route } = this.props;
     const { user } = route.params;
@@ -100,12 +107,13 @@ export default class User extends Component {
             data={stars}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
-              <Starred>
+              <Starred onPress={() => this.handleNavigate(item)}>
                 <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
                 <Info>
                   <Title>{item.name}</Title>
                   <Author>{item.owner.login}</Author>
                 </Info>
+                <Icon name="arrow-forward" size={20} color="#333" />
               </Starred>
             )}
             onRefresh={this.refreshList} // Função dispara quando o usuário arrasta a lista pra baixo
