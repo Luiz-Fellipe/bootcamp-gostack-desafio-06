@@ -16,6 +16,7 @@ import {
   Bio,
   ProfileButton,
   ProfileButtonText,
+  ErrorText,
 } from './styles';
 
 export default class Main extends Component {
@@ -29,10 +30,11 @@ export default class Main extends Component {
     newUser: '',
     users: [],
     loading: false,
+    error: false,
+    duplicateUser: false,
   };
 
   async componentDidMount() {
-    console.tron.log(this.props);
     const users = await AsyncStorage.getItem('users');
 
     if (users) {
@@ -51,24 +53,42 @@ export default class Main extends Component {
   handleAddUser = async () => {
     const { newUser, users } = this.state;
 
-    this.setState({ loading: true });
+    try {
+      this.setState({ loading: true, error: false, duplicateUser: false });
 
-    const response = await api.get(`/users/${newUser}`);
+      const userExist = users.find(
+        user => user.login.toLowerCase() === newUser.toLowerCase()
+      );
 
-    const data = {
-      name: response.data.name,
-      login: response.data.login,
-      bio: response.data.bio,
-      avatar: response.data.avatar_url,
-    };
+      if (userExist) {
+        this.setState({ duplicateUser: true });
+        throw new Error('Usuário duplicado');
+      }
 
-    this.setState({
-      users: [...users, data],
-      newUser: '',
-      loading: false,
-    });
+      const response = await api.get(`/users/${newUser}`);
 
-    Keyboard.dismiss();
+      const data = {
+        name: response.data.name,
+        login: response.data.login,
+        bio: response.data.bio,
+        avatar: response.data.avatar_url,
+      };
+
+      this.setState({
+        users: [...users, data],
+        newUser: '',
+        loading: false,
+        error: false,
+        duplicateUser: false,
+      });
+
+      Keyboard.dismiss();
+    } catch (error) {
+      this.setState({
+        error: true,
+        loading: false,
+      });
+    }
   };
 
   handleNavigate = user => {
@@ -77,7 +97,7 @@ export default class Main extends Component {
   };
 
   render() {
-    const { newUser, users, loading } = this.state;
+    const { newUser, users, loading, error, duplicateUser } = this.state;
     return (
       <Container>
         <Form>
@@ -89,6 +109,7 @@ export default class Main extends Component {
             onChangeText={text => this.setState({ newUser: text })}
             returnKeyType="send"
             onSubmitEditing={this.handleAddUser}
+            error={error}
           />
           <SubmitButton loading={loading} onPress={this.handleAddUser}>
             {loading ? (
@@ -98,7 +119,11 @@ export default class Main extends Component {
             )}
           </SubmitButton>
         </Form>
-
+        {error && (
+          <ErrorText>
+            {duplicateUser ? 'Usuário já existe !' : 'Usuário não encontrado'}
+          </ErrorText>
+        )}
         <List
           data={users}
           keyExtractor={user => user.login}

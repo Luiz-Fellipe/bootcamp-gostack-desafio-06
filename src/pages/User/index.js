@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import api from '../../services/api';
 import {
   Container,
@@ -118,7 +120,7 @@ export default class User extends Component {
             )}
             onRefresh={this.refreshList} // Função dispara quando o usuário arrasta a lista pra baixo
             refreshing={refreshing}
-            onEndReachedThreshold={0.3}
+            onEndReachedThreshold={0.2}
             onEndReached={this.loadMore}
           />
         )}

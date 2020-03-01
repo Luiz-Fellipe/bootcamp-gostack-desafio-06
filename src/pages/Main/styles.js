@@ -10,9 +10,7 @@ export const Container = styled.View`
 
 export const Form = styled.View`
   flex-direction: row;
-  padding-bottom: 20px;
-  border-bottom-width: 1px;
-  border-color: #eee;
+  padding-bottom: 10px;
 `;
 
 export const Input = styled.TextInput.attrs({
@@ -20,7 +18,8 @@ export const Input = styled.TextInput.attrs({
 })`
   flex: 1;
   height: 40px;
-  border: 1px solid #eee;
+  border: 1px;
+  border-color: ${props => (props.error ? '#ff0000' : '#eee')}
   border-radius: 4px;
   background: #eee;
 `;
@@ -38,12 +37,14 @@ export const SubmitButton = styled(RectButton)`
 export const List = styled.FlatList.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  margin-top: 20px;
+  margin-top: 10px;
+  border-top-width: 1px;
+  border-color: #eee;
 `;
 
 export const User = styled.View`
   align-items: center;
-  margin: 0 20px 30px;
+  margin: 20px 20px;
   padding: 5px;
 `;
 
@@ -83,4 +84,9 @@ export const ProfileButton = styled(RectButton)`
 export const ProfileButtonText = styled.Text`
   color: #fff;
   font-weight: bold;
+`;
+
+export const ErrorText = styled.Text`
+  font-size: 12px;
+  color: #ff0000;
 `;
